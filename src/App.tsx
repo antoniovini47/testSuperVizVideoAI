@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import { SuperVizRoomProvider, VideoConference } from "@superviz/react-sdk";
+import getRecordings from "./services/getRecording";
 
 const DEVELOPER_KEY = import.meta.env.VITE_SUPERVIZ_DEVELOPER_KEY;
 const collaborationMode = {
@@ -12,7 +13,7 @@ function App() {
 
   return (
     <>
-      <h1>Vite + React</h1>
+      <h1>Video AI Test</h1>
       {!userID ? (
         <>
           <input type="text" placeholder="userID" />
@@ -25,6 +26,21 @@ function App() {
             }}>
             Iniciar
           </button>
+          <br></br>
+          <br></br>
+          <button
+            onClick={() => {
+              console.log("getting recordings...");
+              getRecordings().then((recordings) => {
+                const textarea = document.querySelector("textarea");
+                if (textarea) {
+                  textarea.value = JSON.stringify(recordings, null, 2);
+                }
+              });
+            }}>
+            getRecordings
+          </button>
+          <textarea placeholder="Transcript" readOnly></textarea>
         </>
       ) : null}
       {userID ? (
@@ -43,6 +59,7 @@ function App() {
             onDestroy={() => {
               console.log("Video conference destroyed...generating log");
             }}
+            enableRecording={true}
             language="en"
             locales={["enLocale"]}
             participantType="host"
