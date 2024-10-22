@@ -8,20 +8,27 @@ const secret = import.meta.env.DEV
   ? import.meta.env.VITE_API_SECRET_KEY_DEFAULT_NO_EXPIRATION_SECRET_DEVELOPMENT
   : import.meta.env.VITE_API_SECRET_KEY_DEFAULT_NO_EXPIRATION_SECRET_PRODUCTION;
 
-const getRecordings = async () => {
+async function generateTranscriptRequest(recordingId: string) {
   try {
-    const response = await axios.get("https://api.superviz.com/recording", {
-      headers: {
-        "Content-Type": "application/json",
-        client_id: client_id,
-        secret: secret,
+    const response = await axios.post(
+      "https://api.superviz.com/recordings/transcripts",
+      {
+        recordingId: recordingId,
+        language: "en-US",
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          client_id: client_id,
+          secret: secret,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    console.error("Error fetching recordings:", error);
+    console.error("Error generating transcript request:", error);
     throw error;
   }
-};
+}
 
-export default getRecordings;
+export default generateTranscriptRequest;
